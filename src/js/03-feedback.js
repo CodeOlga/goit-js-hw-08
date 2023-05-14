@@ -21,6 +21,16 @@ populateInputs();
 
 function onFormSubmit(e) {
   e.preventDefault();
+
+  //----------if need check filling all the fields--------
+  // if (refs.form.email.value && refs.form.message.value) {
+  //   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+  //   e.currentTarget.reset();
+  //   localStorage.removeItem(STORAGE_KEY);
+  // } else {
+  //   return alert('Please, fill in all the fields!');
+  // }
+
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
   console.log(formData);
@@ -30,6 +40,7 @@ function populateInputs() {
   const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
   if (savedMessage) {
-    refs.form.value = savedMessage;
+    refs.form.email.value = savedMessage.email || '';
+    refs.form.message.value = savedMessage.message || '';
   }
 }
