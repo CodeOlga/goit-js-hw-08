@@ -34,5 +34,5 @@ function onFormSubmit(e) {
 
   localStorage.removeItem(STORAGE_KEY);
   e.currentTarget.reset();
-  // formData = {};
+  formData = {};
 }
