@@ -2,45 +2,37 @@ import throttle from 'lodash.throttle';
 
 const STORAGE_KEY = 'feedback-form-state';
 
-const formData = {};
+const form = document.querySelector('.feedback-form');
 
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  textarea: document.querySelector('.feedback-form textarea'),
-};
+form.addEventListener('submit', onFormSubmit);
+form.addEventListener('input', throttle(onFormInput, 500));
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.form.addEventListener('input', throttle(onFormInput, 500));
-
-function onFormInput(e) {
-  formData[e.target.name] = e.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-}
+let formData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+const { email, message } = form.elements;
 
 populateInputs();
 
-function onFormSubmit(e) {
-  e.preventDefault();
-
-  //----------if need check filling all the fields--------
-  // if (refs.form.email.value && refs.form.message.value) {
-  //   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
-  //   e.currentTarget.reset();
-  //   localStorage.removeItem(STORAGE_KEY);
-  // } else {
-  //   return alert('Please, fill in all the fields!');
-  // }
-
-  e.currentTarget.reset();
-  localStorage.removeItem(STORAGE_KEY);
-  console.log(formData);
+function onFormInput() {
+  formData = { email: email.value, message: message.value };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
 function populateInputs() {
-  const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-  if (savedMessage) {
-    refs.form.email.value = savedMessage.email || '';
-    refs.form.message.value = savedMessage.message || '';
+  if (formData) {
+    email.value = formData.email || '';
+    message.value = formData.message || '';
   }
+}
+function onFormSubmit(e) {
+  e.preventDefault();
+  console.log({ email: email.value, message: message.value });
+
+  //----------if need check filling all the fields--------
+  if (!email.value || !message.value) {
+    return alert('Please, fill in all the fields!');
+  }
+
+  localStorage.removeItem(STORAGE_KEY);
+  e.currentTarget.reset();
+  // formData = {};
 }
